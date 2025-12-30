@@ -2,9 +2,6 @@
 
 name: Deploy
 
-env:
-  Matlab_Release: R2025b
-
 on:
   workflow_dispatch:
   release:
@@ -19,9 +16,16 @@ defaults:
 
 jobs:
   mytry1:
+    name: Run a job
+
     runs-on: ubuntu-latest
-    name: Run a job for ${{ env.Matlab_Release }}
+
+    env:
+      Matlab_Release: R2025b
+
     steps:
+
+    - run: echo $env.Matlab_Release
 
     - uses: actions/checkout@v5
 
