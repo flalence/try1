@@ -1,0 +1,35 @@
+# MATLAB Release
+
+name: Deploy
+
+env:
+  Matlab_Release: R2025b
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+defaults:
+  run:
+    shell: bash
+
+#permissions:
+#  contents: write
+
+jobs:
+  mytry1:
+    runs-on: ubuntu-latest
+    name: Run a job for ${{ env.Matlab_Release }}
+    steps:
+
+    - uses: actions/checkout@v5
+
+    - name: Setup MATLAB ${{ env.Matlab_Release }}
+      uses: matlab-actions/setup-matlab@v2
+      with:
+        release: ${{ env.Matlab_Release }}
+        cache: true
+
+    - name: Try
+      run: matlab -batch "matlabRelease"
