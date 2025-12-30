@@ -28,11 +28,13 @@ jobs:
 
     steps:
 
-    - run: echo $env.Matlab_Release
+    - name: Start steps
+      run: echo ${{ env.Matlab_Release }}
 
-    - uses: actions/checkout@v5
+    - name: Check out the repository
+      uses: actions/checkout@v5
 
-    - name: Setup MATLAB $env.Matlab_Release
+    - name: Set up MATLAB ${{ env.Matlab_Release }}
       uses: matlab-actions/setup-matlab@v2
       with:
         release: ${{ env.Matlab_Release }}
@@ -41,7 +43,7 @@ jobs:
     - name: Run MATLAB
       uses: matlab-actions/run-command@v2
       with:
-        command: writelines(matlabRelease.Release, $env.Filename)
+        command: writelines(matlabRelease.Release, ${{ env.Filename }})
 
     - run: |
         echo "MATLAB Release"
