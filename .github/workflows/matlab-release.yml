@@ -28,13 +28,10 @@ jobs:
 
     steps:
 
-    - name: Start steps
-      run: echo ${{ env.Matlab_Release }}
-
     - name: Check out the repository
       uses: actions/checkout@v5
 
-    - name: Set up MATLAB ${{ env.Matlab_Release }}
+    - name: Set up MATLAB
       uses: matlab-actions/setup-matlab@v2
       with:
         release: ${{ env.Matlab_Release }}
@@ -48,3 +45,12 @@ jobs:
     - run: |
         echo "MATLAB Release"
         cat ${{ env.Filename }}
+        MATLAB_RELEASE=$(< ${{ env.Filename }} )
+        echo $MATLAB_RELEASE
+        if [ "$MATLAB_RELEASE" = ${{ env.Matlab_Release }} ]; then
+          echo "Release matched"
+        else
+          echo "Release unmatched"
+          echo "Specified in YML: ${{ env.Filename }}"
+          echo "Actual: $MATLAB_RELEASE"
+        fi
