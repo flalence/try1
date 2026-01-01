@@ -1,52 +1,48 @@
 # MATLAB Release
 
-name: MATLAB Release
+name: Try auto-release
+
+env:
+  ArchiveBaseName: "my-release-"
 
 on:
-  workflow_dispatch:
-  release:
-    types: [created]
   push:
-    branches: [main]
-
-defaults:
-  run:
-    shell: bash
-
-# Enable a permission to save a file.
-# The use of the writelines command in MATLAB needs it.
-permissions:
-  contents: write
+    tags:
+      - "v*.*.*"
 
 jobs:
-  mytry1:
-    name: Run a job
-
+  DeployJob:
+    name: Deploy job
     runs-on: ubuntu-latest
-
-    env:
-      Matlab_Release: R2025b
-      Filename: "matlab-release.txt"
-
     steps:
 
     - name: Check out the repository
       uses: actions/checkout@v5
 
-    - name: Set up MATLAB ${{ env.Matlab_Release }}
-      uses: matlab-actions/setup-matlab@v2
-      with:
-        release: ${{ env.Matlab_Release }}
-        cache: true
-
-    - name: Run MATLAB
-      uses: matlab-actions/run-command@v2
-      with:
-        command: writelines(matlabRelease.Release, "${{ env.Filename }}")
-
-    - name: After running MATLAB
-      # This is an example of creating a bash variable from the content of a single-line text file.
-      # (This is useful to build the filename of a zip archive.)
+    - name: Create ZIP from Release folder
       run: |
-        MATLAB_RELEASE=$(< ${{ env.Filename }} )
-        echo "MATLAB Release: $MATLAB_RELEASE"
+          sudo apt-get update && sudo apt-get install -y zip
+          TAG="${GITHUB_REF_NAME:-notag}"
+          ARCHIVE="${{ env.ArchiveBaseName }}-${TAG}.zip"
+          # Zip only the "Release" folder and its contents.
+          cd Release
+          zip -r "../$ARCHIVE" .
+          #echo "ARCHIVE_NAME=$ARCHIVE" >> $GITHUB_ENV
+
+    - name: Generate checksum (optional)
+      run: |
+          sha256sum "$ARCHIVE" > "$ARCHIVE.sha256"
+          #echo "CHECKSUM_NAME=$ARCHIVE.sha256" >> $GITHUB_ENV
+
+    - name: Create the Release and upload assets
+      uses: softprops/action-gh-release@v2
+      with:
+          # ${{ github.ref_name }} is a tag that triggered the workflow, e.g., v1.2.3
+          name: "Release ${{ github.ref_name }}"
+          draft: false
+          prerelease: false
+          files: |
+            $ARCHIVE
+            $CHECKSUM
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
