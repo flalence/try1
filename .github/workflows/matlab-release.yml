@@ -3,7 +3,7 @@
 name: Try auto-release
 
 env:
-  ArchiveBaseName: "my-release-"
+  ArchiveBaseName: "my-release"
 
 on:
   push:
@@ -28,12 +28,12 @@ jobs:
           # Zip only the "Release" folder and its contents.
           cd Release
           zip -r "../$ARCHIVE" .
-          echo "ARCHIVE_NAME=$ARCHIVE" >> $GITHUB_ENV
+          echo "ARCHIVE=$ARCHIVE" >> $GITHUB_ENV
 
     - name: Generate checksum (optional)
       run: |
-          sha256sum "$ARCHIVE" > "$ARCHIVE.sha256"
-          echo "CHECKSUM_NAME=$ARCHIVE.sha256" >> $GITHUB_ENV
+          sha256sum "${{ env.ARCHIVE }}" > "${{ env.ARCHIVE }}.sha256"
+          echo "CHECKSUM=${{ env.ARCHIVE }}.sha256" >> $GITHUB_ENV
 
     - name: Create the Release and upload assets
       uses: softprops/action-gh-release@v2
@@ -43,7 +43,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            $ARCHIVE
-            $CHECKSUM
+            ${{ env.ARCHIVE }}
+            ${{ env.CHECKSUM }}
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

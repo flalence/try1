@@ -3,23 +3,40 @@
 Try GitHub Actions to automatically create releases
 when you push tags to your repository.
 
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-To check that the intended tag is pointing to the HEAD, use:
-
-```bash
-git tag --points-at HEAD
-```
-
-## Check
+## Set up
 
 ```bash
 git config user.name
 git config user.email
 ```
+
+## Tag
+
+See the existing tags in a local repository.
+
+```bash
+git tag
+```
+
+Create a new tag.
+
+```bash
+git tag v1.0.0
+```
+
+Check that the intended tag is pointing to the HEAD.
+
+```bash
+git tag --points-at HEAD
+```
+
+Push the tag to the remote repository in GitHub.
+
+```bash
+git push origin v1.0.0
+```
+
+## In case of authentication issues for using push
 
 Windows Credential Manager may interfere.
 
