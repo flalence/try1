@@ -4,10 +4,20 @@ This is a repository demonstrating the tag-release workflow
 where you automatically create a GitHub Release
 by pushing a git tag representing the semantic version such as `v1.2.3`.
 Pushing commits does not trigger the tag-release.
+When an auto-release workflow runs, it can create
+one or more zip files and make them available in the Release page.
 
-In this repo, the tag-release is configured in the GitHub Actions config file:
+In this repo, the tag-release is configured in this GitHub Actions config file:
 
-- `.github` > `.workflows` > `auto-release.yml`
+- `.github` > `.workflows` > `tag-release.yml`
+
+It creates 2 zip files.
+One is a zip file with the contents of the "Release" folder of this repo.
+The other is a SHA256 of it.
+See the config file for how they are created.
+The URL of a zip file is, for example, as follows.
+
+- https://github.com/flalence/tag-release/releases/download/v0.0.4/my-release-v0.0.4.zip
 
 ## Set up
 
